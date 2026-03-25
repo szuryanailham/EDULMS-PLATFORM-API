@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import 'express-async-errors';
 import { errorHandler } from './presentation/middlewares/errorHandler.js';
 import { router as apiRouter } from './presentation/routes/index.js';
+import { checkDbConnection } from './db.js';
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,9 @@ app.get('/', (_, res) => res.json({ status: 'ok' }));
 app.use(errorHandler);
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+
+checkDbConnection();
+
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
