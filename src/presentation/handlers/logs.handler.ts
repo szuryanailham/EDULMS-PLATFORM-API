@@ -3,23 +3,25 @@ import { getLogsController } from '../controllers/logsController.js';
 import { GetLogsQueryDTO } from '../../application/dtos/GetLogsQueryDTO.js';
 
 export function getLogsHandler(req: Request, res: Response) {
-  // Map query params to DTO explicitly
   const dto = new GetLogsQueryDTO({
-    level: typeof req.query.level === 'string' ? req.query.level : undefined,
-    limit: typeof req.query.limit === 'string' ? Number(req.query.limit) : undefined,
-    offset: typeof req.query.offset === 'string' ? Number(req.query.offset) : undefined,
-    requestId: typeof req.query.requestId === 'string' ? req.query.requestId : undefined,
-    actorId: typeof req.query.actorId === 'string' ? req.query.actorId : undefined,
-    url: typeof req.query.url === 'string' ? req.query.url : undefined,
-    method: typeof req.query.method === 'string' ? req.query.method : undefined,
-    statusCode: typeof req.query.statusCode === 'string' ? req.query.statusCode : undefined,
-    slow: typeof req.query.slow === 'string' ? req.query.slow : undefined,
+    ...(typeof req.query.level === 'string' && { level: req.query.level }),
+    ...(typeof req.query.limit === 'string' && { limit: Number(req.query.limit) }),
+    ...(typeof req.query.offset === 'string' && { offset: Number(req.query.offset) }),
+    ...(typeof req.query.requestId === 'string' && { requestId: req.query.requestId }),
+    ...(typeof req.query.actorId === 'string' && { actorId: req.query.actorId }),
+    ...(typeof req.query.url === 'string' && { url: req.query.url }),
+    ...(typeof req.query.method === 'string' && { method: req.query.method }),
+    ...(typeof req.query.statusCode === 'string' && { statusCode: req.query.statusCode }),
+    ...(typeof req.query.slow === 'string' && { slow: req.query.slow }),
   });
 
   try {
     const result = getLogsController(dto);
     res.json(result);
   } catch (err: any) {
-    res.status(500).json({ error: 'LogReadError', message: err.message });
+    res.status(500).json({
+      error: 'LogReadError',
+      message: err.message,
+    });
   }
 }
