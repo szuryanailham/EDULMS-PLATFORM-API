@@ -1,7 +1,7 @@
-import pool from './db';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import pool from '../db.js';
 
 export async function runUsersMigration() {
   const sql = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), './setupUsersTable.sql'), 'utf8');

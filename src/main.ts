@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-// import morgan from 'morgan';
 import 'express-async-errors';
 import { errorHandler } from './presentation/middlewares/errorHandler.js';
 import { errorLogger } from './presentation/middlewares/loggerMiddleware.js';

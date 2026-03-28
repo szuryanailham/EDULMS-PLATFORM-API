@@ -1,6 +1,9 @@
-import type { Request, Response } from 'express';
 import { z } from 'zod';
-import { findUserByUsernameOrEmail, createUser } from '../../services/userService.js';
+import bcrypt from 'bcryptjs';
+import { UserRepository } from '../../application/repositories/UserRepository.js';
+import { CreateUserRequestDTO } from '../../application/dtos/CreateUserRequestDTO.js';
+import { UserResponseDTO } from '../../application/dtos/UserResponseDTO.js';
+import { UserEntity } from '../../application/entities/UserEntity.js';
 import { signJwt } from '../../utils/jwt.js';
 
 const signupSchema = z.object({
@@ -9,26 +12,27 @@ const signupSchema = z.object({
   password: z.string().min(8),
 });
 
-export async function signupController(req: Request, res: Response) {
-  const parse = signupSchema.safeParse(req.body);
+const userRepository = new UserRepository();
+
+export async function signupController(createUserDto: CreateUserRequestDTO): Promise<{ user: UserResponseDTO, token: string } | { error: any }> {
+  const parse = signupSchema.safeParse(createUserDto);
   if (!parse.success) {
-    return res.status(400).json({
-      status: 'fail',
-      errors: parse.error.flatten().fieldErrors
-    });
+    return { error: parse.error.flatten().fieldErrors };
   }
   const { username, email, password } = parse.data;
-
-  const existing = await findUserByUsernameOrEmail(username, email);
+  const existing = await userRepository.findByUsernameOrEmail(username, email);
   if (existing) {
-    return res.status(403).json({ status: 'fail', message: 'Username or email already registered' });
+    return { error: { message: 'Username or email already registered' } };
   }
-  const user = await createUser(username, email, password);
-  const token = signJwt({ id: user.id, username: user.username });
-  
-  return res.status(201).json({
-    status: 'success',
-    user,
-    token
+  const passwordHash = await bcrypt.hash(password, 10);
+  const newUserEntity = new UserEntity({ username, email, password: passwordHash });
+  const userEntity = await userRepository.create(newUserEntity);
+  const userDto = new UserResponseDTO({
+    id: userEntity.id,
+    username: userEntity.username,
+    email: userEntity.email,
+    created_at: userEntity.created_at,
   });
+  const token = signJwt({ id: userEntity.id, username: userEntity.username });
+  return { user: userDto, token };
 }

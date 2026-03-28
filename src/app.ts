@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import 'express-async-errors';
-import { errorHandler } from './presentation/middlewares/errorHandler.ts';
-import { errorLogger } from './presentation/middlewares/loggerMiddleware.ts';
-import { router as apiRouter } from './presentation/routes/index.ts';
-import { requestLogger } from './presentation/middlewares/loggerMiddleware.ts';
+import { errorHandler } from './presentation/middlewares/errorHandler.js';
+import { errorLogger } from './presentation/middlewares/loggerMiddleware.js';
+import { router as apiRouter } from './presentation/routes/index.js';
+import { requestLogger } from './presentation/middlewares/loggerMiddleware.js';
 
 const app = express();
 app.use(express.json());
