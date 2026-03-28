@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../../src/app.ts';
-import pool from '../../src/db';
+import app from '../../src/app.js';
+import pool from '../../src/db.js';
 describe('POST /api/v1/auth/signup', () => {
   const userData = {
     username: 'testuser',

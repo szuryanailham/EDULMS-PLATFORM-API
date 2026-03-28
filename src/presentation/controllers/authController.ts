@@ -5,6 +5,7 @@ import { CreateUserRequestDTO } from '../../application/dtos/CreateUserRequestDT
 import { UserResponseDTO } from '../../application/dtos/UserResponseDTO.js';
 import { UserEntity } from '../../application/entities/UserEntity.js';
 import { signJwt } from '../../utils/jwt.js';
+import type { LoginUserRequestDTO } from '../../application/dtos/LoginUserRequestDTO.js';
 
 const signupSchema = z.object({
   username: z.string().min(3).max(50),
@@ -36,3 +37,24 @@ export async function signupController(createUserDto: CreateUserRequestDTO): Pro
   const token = signJwt({ id: userEntity.id, username: userEntity.username });
   return { user: userDto, token };
 }
+
+export async function loginController(loginUserDto: LoginUserRequestDTO): Promise<{ user: UserResponseDTO, token: string } | { error: any }> {
+  const { email, password } = loginUserDto;
+  const userEntity = await userRepository.findByUsernameOrEmail(email, email);
+  if (!userEntity) {
+    return { error: { message: 'Invalid email or password' } };
+  }
+  const passwordMatches = await bcrypt.compare(password, userEntity.password);
+  if (!passwordMatches) {
+    return { error: { message: 'Invalid email or password' } };
+  }
+  const userDto = new UserResponseDTO({
+    id: userEntity.id,
+    username: userEntity.username,
+    email: userEntity.email,
+    created_at: userEntity.created_at,
+  });
+  const token = signJwt({ id: userEntity.id, username: userEntity.username });
+  return { user: userDto, token };
+}
+ 

@@ -17,11 +17,16 @@ export function getLogsHandler(req: Request, res: Response) {
 
   try {
     const result = getLogsController(dto);
-    res.json(result);
+    res.json({
+      success: true,
+      message: 'Logs fetched',
+      data: result
+    });
   } catch (err: any) {
     res.status(500).json({
-      error: 'LogReadError',
-      message: err.message,
+      success: false,
+      message: err.message || 'LogReadError',
+      data: null
     });
   }
 }
