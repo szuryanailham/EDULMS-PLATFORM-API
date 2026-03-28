@@ -1,4 +1,5 @@
 module.exports = {
+  transformIgnorePatterns: ["/node_modules/(?!(uuid)/)"] ,
   testEnvironment: 'node',
   testMatch: [
     '<rootDir>/tests/**/*.test.[jt]s?(x)',

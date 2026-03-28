@@ -1,4 +1,4 @@
-import { AppError } from '../../src/presentation/middlewares/errorHandler.ts';
+import { AppError } from '../../src/presentation/middlewares/errorHandler.js';
 
 describe('AppError', () => {
   it('should create an error with message and status code', () => {
