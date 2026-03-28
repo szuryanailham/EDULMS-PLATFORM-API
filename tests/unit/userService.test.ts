@@ -1,4 +1,4 @@
-import { hashPassword, comparePassword } from '../../src/services/userService';
+import { hashPassword, comparePassword } from '../../src/utils/passwordUtils.js';
 describe('userService password utilities', () => {
   it('should hash and verify password correctly', async () => {
     const plain = 'MyS3curePassword';
