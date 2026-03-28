@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import logger from '../../utils/logger.js';
+import logger from '../../utils/logger.ts';
 import { v4 as uuidv4 } from 'uuid';
 
 const SLOW_REQUEST_THRESHOLD = 1000; // ms

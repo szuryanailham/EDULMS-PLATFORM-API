@@ -1,12 +1,10 @@
 import { Router } from 'express';
+import { signupController } from '../controllers/authController.js';
 
 const router = Router();
 
-router.post('/sign-up', (req, res) => {
-  res.json({
-    status: 'success',
-    message: 'User registered',
-  });
-});
+
+
+router.post('/signup', signupController);
 
 export default router;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getLogsHandler } from '../handlers/logs.handler.js';
-import { adminOnly, authMiddleware } from '../middlewares/authMiddleware.js';
+import { getLogsHandler } from '../handlers/logs.handler.ts';
+import { adminOnly, authMiddleware } from '../middlewares/authMiddleware.ts';
 
 export const logsRouter = Router();
 
