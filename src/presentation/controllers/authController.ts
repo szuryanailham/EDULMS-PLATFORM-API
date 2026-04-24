@@ -32,7 +32,7 @@ export async function signupController(createUserDto: CreateUserRequestDTO): Pro
     id: userEntity.id,
     username: userEntity.username,
     email: userEntity.email,
-    created_at: userEntity.created_at,
+    createdAt: userEntity.createdAt,
   });
   const token = signJwt({ id: userEntity.id, username: userEntity.username });
   return { user: userDto, token };
@@ -52,7 +52,7 @@ export async function loginController(loginUserDto: LoginUserRequestDTO): Promis
     id: userEntity.id,
     username: userEntity.username,
     email: userEntity.email,
-    created_at: userEntity.created_at,
+    createdAt: userEntity.createdAt,
   });
   const token = signJwt({ id: userEntity.id, username: userEntity.username });
   return { user: userDto, token };

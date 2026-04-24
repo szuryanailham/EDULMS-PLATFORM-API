@@ -14,10 +14,11 @@
     "test:integration": "jest --runInBand --testPathPattern=tests/integration",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "migrate": "npx sequelize-cli db:migrate",
-    "migrate:undo": "npx sequelize-cli db:migrate:undo",
-    "migrate:reset": "npx sequelize-cli db:migrate:undo:all",
-    "migrate:create": "npx sequelize-cli migration:generate --name"
+    "migrate": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio"
   },
   "author": "",
   "license": "ISC",
@@ -55,6 +56,7 @@
   "keywords": [],
   "description": "",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.5.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",

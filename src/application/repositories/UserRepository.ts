@@ -1,27 +1,24 @@
-import pool from '../../db.js';
+import prisma from '../../lib/prisma.js';
 import { UserEntity } from '../entities/UserEntity.js';
 
 export class UserRepository {
-  // find user by username or email
   async findByUsernameOrEmail(username: string, email: string): Promise<UserEntity | null> {
-    const result = await pool.query(
-      'SELECT * FROM users WHERE username = $1 OR email = $2',
-      [username, email]
-    );
-    if (result.rows[0]) {
-      return new UserEntity(result.rows[0]);
-    }
-    return null;
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ username }, { email }],
+      },
+    });
+    return user ? new UserEntity(user) : null;
   }
 
-  // Create user
   async create(user: UserEntity): Promise<UserEntity> {
-    const result = await pool.query(
-      'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email, password, created_at, updated_at',
-      [user.username, user.email, user.password]
-    );
-    return new UserEntity(result.rows[0]);
+    const created = await prisma.user.create({
+      data: {
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      },
+    });
+    return new UserEntity(created);
   }
 }
-
-
