@@ -1,18 +1,9 @@
-import fs from 'fs';
-import path from 'path';
 import { LogEntity } from '../entities/LogEntity.js';
 import { GetLogsQueryDTO } from '../dtos/GetLogsQueryDTO.js';
 
-const LOG_FILE = path.resolve('logs', 'app.log');
-
 export class LogRepository {
   readLogs(): LogEntity[] {
-    if (!fs.existsSync(LOG_FILE)) return [];
-    const content = fs.readFileSync(LOG_FILE, 'utf8');
-    const lines = content.split('\n').filter(Boolean);
-    return lines.map(line => {
-      try { return new LogEntity(JSON.parse(line)); } catch { return null; }
-    }).filter(Boolean) as LogEntity[];
+    return [];
   }
 
   filterLogs(logs: LogEntity[], filter: GetLogsQueryDTO) {
