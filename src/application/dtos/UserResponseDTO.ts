@@ -1,6 +1,7 @@
 export class UserResponseDTO {
-  id!: number;
-  username!: string;
+  id!: string;
+  firstName!: string;
+  lastName!: string;
   email!: string;
   createdAt!: Date;
 

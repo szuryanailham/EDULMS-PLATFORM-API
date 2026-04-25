@@ -1,9 +1,4 @@
 import winston from 'winston';
-import path from 'path';
-import fs from 'fs';
-
-const logsDir = path.resolve('logs');
-if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir);
 
 const logger = winston.createLogger({
   level: 'info',
@@ -11,7 +6,6 @@ const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
     winston.format((info) => {
-      // Pisahkan message dari data jika info.error, jaga field "message" agar selalu dipisah
       if (info.level === 'error' && info.message && typeof info === 'object') {
         const { message, ...data } = info;
         return { ...data, message };
@@ -21,8 +15,7 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: path.join(logsDir, 'app.log'), maxsize: 5242880, maxFiles: 5 })
+    new winston.transports.Console()
   ]
 });
 
