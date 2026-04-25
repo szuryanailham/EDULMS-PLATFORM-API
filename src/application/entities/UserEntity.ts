@@ -1,10 +1,10 @@
 export class UserEntity {
-  id!: number;
-  username!: string;
+  id!: string;
+  firstName!: string;
+  lastName!: string;
   email!: string;
   password!: string;
   createdAt!: Date;
-  updatedAt!: Date;
 
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
