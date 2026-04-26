@@ -15,6 +15,27 @@ const signupSchema = z.object({
   password: z.string().min(8).max(255),
 });
 
+const ALLOWED_EMAIL_DOMAINS = [
+  'gmail.com', 'yahoo.com', 'yahoo.co.id', 'outlook.com',
+  'hotmail.com', 'icloud.com', 'live.com', 'protonmail.com',
+  'mail.com',
+];
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .email('Invalid email format')
+    .max(255)
+    .refine((val) => {
+      const domain = val.split('@')[1]?.toLowerCase();
+      return domain ? ALLOWED_EMAIL_DOMAINS.includes(domain) : false;
+    }, 'Email must be from a recognized provider (e.g. gmail.com, yahoo.com)'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(255, 'Password is too long'),
+});
+
 const userRepository = new UserRepository();
 
 export async function signupController(createUserDto: CreateUserRequestDTO): Promise<{ user: UserResponseDTO; token: string } | { error: any }> {
@@ -52,7 +73,11 @@ export async function signupController(createUserDto: CreateUserRequestDTO): Pro
 }
 
 export async function loginController(loginUserDto: LoginUserRequestDTO): Promise<{ user: UserResponseDTO; token: string } | { error: any }> {
-  const { email, password } = loginUserDto;
+  const parse = loginSchema.safeParse(loginUserDto);
+  if (!parse.success) {
+    return { error: parse.error.flatten().fieldErrors };
+  }
+  const { email, password } = parse.data;
   const userEntity = await userRepository.findByEmail(email);
   if (!userEntity) {
     return { error: { message: 'Invalid email or password' } };
