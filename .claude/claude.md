@@ -12,6 +12,8 @@ This project is built with:
 - Typescript
 - Expres JS
 - Prisma
+- Jest
+
 
 ---
 
@@ -50,6 +52,7 @@ Uses Prisma depending on query complexity.
 
 ### 7. Testing 
 testing for all fiture include unit testing and integration testing
+when generated code solution is done 
 
 ---
 
@@ -70,3 +73,4 @@ testing for all fiture include unit testing and integration testing
 - When fixing or enhancing features, do not disrupt existing code or workflows unless necessary and approved.
 
 - Always provide a complete explanation of flow changes after implementing code updates.
+
