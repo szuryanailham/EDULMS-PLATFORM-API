@@ -25,7 +25,7 @@ model Category {
   userId      String   @map("user_id") @db.Uuid
   name        String   @db.VarChar(255)
   type        String   @db.VarChar(255)
-  limitAmount BigInt   @map("limit_amount")
+  limitAmount BigInt?  @map("limit_amount")
   createdAt   DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id])
