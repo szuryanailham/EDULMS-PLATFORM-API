@@ -4,6 +4,6 @@ import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-router.post('/', authMiddleware, createCategoryHandler);
+router.post('/one', authMiddleware, createCategoryHandler);
 
 export default router;
