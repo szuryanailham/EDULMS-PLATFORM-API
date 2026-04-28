@@ -25,6 +25,11 @@ This project follows a layered architecture with separation of concerns. The lay
 Path: `/BUDGETING/src/presentation/routes/index.ts` and  `BUDGETING/src/presentation/routes/health.route.ts` (if route for health groups)
 Responsible for registering HTTP routes.
 
+
+Always implement middleware and authentication on all routes, except for sign-in and sign-up. Whenever a `user_id` is required in any database attribute, it should use the ID of the currently authenticated user.
+
+
+
 ### 2. DTO (Data Transfer Object)
 Used to standardize and structure request and response data, ensuring consistency across the application.
 
@@ -41,6 +46,7 @@ Used in the use case and repository layers.
 ### 5. Controller
 Contains all business logic required to run task management features.  
 Each feature has its own use case.
+
 
 Example:
 - auth controller: `/BUDGETING/src/presentation/controllers/authController.ts`
@@ -73,4 +79,5 @@ when generated code solution is done
 - When fixing or enhancing features, do not disrupt existing code or workflows unless necessary and approved.
 
 - Always provide a complete explanation of flow changes after implementing code updates.
+
 

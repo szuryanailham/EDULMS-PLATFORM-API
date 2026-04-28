@@ -15,5 +15,20 @@ model User {
   password  String   @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
 
+  categories Category[]
+
   @@map("users")
+}
+
+model Category {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  type        String   @db.VarChar(255)
+  limitAmount BigInt?  @map("limit_amount")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("categories")
 }

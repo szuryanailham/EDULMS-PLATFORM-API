@@ -1,15 +1,26 @@
 import type { Request, Response, NextFunction } from 'express';
+import { verifyJwt } from '../../utils/jwt.js';
+import { AuthError, ForbiddenError } from './errorHandler.js';
 
-// Dummy Auth Middleware: inject user
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Simulate authentication, in real world decode JWT etc
-  (req as any).user = { id: 'dummy-admin-id', role: 'admin' };
-  next();
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return next(new AuthError('Missing or invalid Authorization header'));
+  }
+
+  const token = authHeader.slice(7);
+  try {
+    const decoded = verifyJwt(token);
+    (req as any).user = decoded;
+    next();
+  } catch {
+    next(new AuthError('Invalid or expired token'));
+  }
 }
 
 export function adminOnly(req: Request, res: Response, next: NextFunction) {
   if ((req as any).user?.role !== 'admin') {
-    return res.status(403).json({ error: 'Forbidden', message: 'Admin only' });
+    return next(new ForbiddenError('Admin only'));
   }
   next();
 }
