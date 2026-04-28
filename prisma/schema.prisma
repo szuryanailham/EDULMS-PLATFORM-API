@@ -26,6 +26,7 @@ model Category {
   name        String   @db.VarChar(255)
   type        String   @db.VarChar(255)
   limitAmount BigInt?  @map("limit_amount")
+  isDeleted   Boolean  @default(false) @map("is_deleted")
   createdAt   DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id])

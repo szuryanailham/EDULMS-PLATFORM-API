@@ -4,6 +4,7 @@ export class CategoryEntity {
   name!: string;
   type!: string;
   limitAmount!: bigint | null;
+  isDeleted: boolean = false;
   createdAt!: Date;
 
   constructor(partial: Partial<CategoryEntity>) {
