@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: budgeting-api
+    env: node
+    buildCommand: npm install && npm run build && npx prisma generate
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
