@@ -15,7 +15,8 @@ model User {
   password  String   @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
 
-  categories Category[]
+  categories   Category[]
+  transactions Transaction[]
 
   @@map("users")
 }
@@ -29,7 +30,29 @@ model Category {
   isDeleted   Boolean  @default(false) @map("is_deleted")
   createdAt   DateTime @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
 
   @@map("categories")
+}
+
+model Transaction {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  categoryId      String    @map("category_id") @db.Uuid
+  transactionName String    @map("transaction_name") @db.VarChar(255)
+  totalAmount     BigInt    @map("total_amount")
+  transactionDate DateTime  @map("transaction_date") @db.Date
+  transactionTime DateTime? @map("transaction_time") @db.Time(0)
+  type            String    @db.VarChar(255)
+  note            String?   @db.Text
+  attachment      String?   @db.VarChar(500)
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([categoryId])
+  @@map("transactions")
 }

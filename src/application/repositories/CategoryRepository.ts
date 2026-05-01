@@ -21,6 +21,26 @@ export class CategoryRepository {
     return found ? new CategoryEntity(found) : null;
   }
 
+  async findManyByUserId(
+    userId: string,
+    skip: number,
+    limit: number,
+  ): Promise<{ id: string; name: string }[]> {
+    return prisma.category.findMany({
+      where: { userId, isDeleted: false },
+      select: { id: true, name: true },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    });
+  }
+
+  async countByUserId(userId: string): Promise<number> {
+    return prisma.category.count({
+      where: { userId, isDeleted: false },
+    });
+  }
+
   async updateById(
     id: string,
     data: { name?: string; type?: string; limitAmount?: bigint | null },

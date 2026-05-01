@@ -1,6 +1,8 @@
 import type { Request, Response } from 'express';
 import {
   createCategoryController,
+  listCategoriesController,
+  getCategoryByIdController,
   updateCategoryController,
   softDeleteCategoryController,
 } from '../controllers/categoryController.js';
@@ -25,6 +27,41 @@ export async function createCategoryHandler(req: Request, res: Response) {
     success: true,
     message: 'Category created successfully',
     data: { category: result.category },
+  });
+}
+
+export async function listCategoriesHandler(req: Request, res: Response) {
+  const userId: string = (req as any).user?.id;
+  const result = await listCategoriesController(userId, {
+    page: req.query.page,
+    limit: req.query.limit,
+  });
+
+  if ('error' in result) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation failed',
+      data: null,
+      errors: result.error,
+    });
+  }
+
+  return res.status(200).json({
+    data: result.data,
+    meta: result.meta,
+  });
+}
+
+export async function getCategoryByIdHandler(req: Request, res: Response) {
+  const userId: string = (req as any).user?.id;
+  const categoryId = String(req.query.category_id_eq ?? '');
+
+  const result = await getCategoryByIdController(userId, categoryId);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Category fetched successfully',
+    data: result.category,
   });
 }
 

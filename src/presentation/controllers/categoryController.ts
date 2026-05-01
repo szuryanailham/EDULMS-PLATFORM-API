@@ -6,6 +6,11 @@ import { CategoryResponseDTO } from '../../application/dtos/CategoryResponseDTO.
 import { CategoryEntity } from '../../application/entities/CategoryEntity.js';
 import { DatabaseError, NotFoundError, ValidationError } from '../middlewares/errorHandler.js';
 
+const listCategoriesQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+});
+
 const createCategorySchema = z.object({
   name: z.string().min(1).max(255),
   type: z.enum(['income', 'expense']),
@@ -62,6 +67,38 @@ export async function createCategoryController(
   return { category: categoryDto };
 }
 
+export async function getCategoryByIdController(
+  userId: string,
+  categoryId: string,
+): Promise<{ category: CategoryResponseDTO }> {
+  if (!categoryId || !/^[0-9a-f-]{36}$/i.test(categoryId)) {
+    throw new ValidationError('Invalid or missing category_id_eq query parameter');
+  }
+
+  let existing: CategoryEntity | null;
+  try {
+    existing = await categoryRepository.findByIdAndUserId(categoryId, userId);
+  } catch (err) {
+    throw new DatabaseError('Failed to fetch category', err);
+  }
+
+  if (!existing) {
+    throw new NotFoundError('Category not found');
+  }
+
+  const categoryDto = new CategoryResponseDTO({
+    id: existing.id,
+    userId: existing.userId,
+    name: existing.name,
+    type: existing.type,
+    limitAmount: existing.limitAmount,
+    isDeleted: existing.isDeleted,
+    createdAt: existing.createdAt,
+  });
+
+  return { category: categoryDto };
+}
+
 export async function updateCategoryController(
   userId: string,
   categoryId: string,
@@ -107,6 +144,35 @@ export async function updateCategoryController(
   });
 
   return { category: categoryDto };
+}
+
+export async function listCategoriesController(
+  userId: string,
+  rawQuery: { page?: unknown; limit?: unknown },
+): Promise<{
+  data: { id: string; name: string }[];
+  meta: { page: number; limit: number; total: number };
+} | { error: any }> {
+  const parse = listCategoriesQuerySchema.safeParse(rawQuery);
+  if (!parse.success) {
+    return { error: parse.error.flatten().fieldErrors };
+  }
+
+  const { page, limit } = parse.data;
+  const skip = (page - 1) * limit;
+
+  let data: { id: string; name: string }[];
+  let total: number;
+  try {
+    [data, total] = await Promise.all([
+      categoryRepository.findManyByUserId(userId, skip, limit),
+      categoryRepository.countByUserId(userId),
+    ]);
+  } catch (err) {
+    throw new DatabaseError('Failed to list categories', err);
+  }
+
+  return { data, meta: { page, limit, total } };
 }
 
 export async function softDeleteCategoryController(
